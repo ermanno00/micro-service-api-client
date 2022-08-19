@@ -26,9 +26,7 @@ public class WebSocketEventServer {
     private static Set<Session> sessions = new HashSet<>();
 
 
-
     public void sendEvent(String message) {
-
         executor.submit(() -> {
 
             for(Session s: this.sessions) {
@@ -46,9 +44,13 @@ public class WebSocketEventServer {
 
     @OnOpen
     public void start(Session session)  throws IOException {
+        if(WebSocketEventClient.connected){
+            this.sessions.add(session);
+            session.getBasicRemote().sendText(new ObjectMapper().writeValueAsString(new Event(EventType.INFO, "In ascolto di eventi...")));
+        }else{
+            session.close(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY,  "Server is not responding"));
+        }
 
-        this.sessions.add(session);
-        session.getBasicRemote().sendText(new ObjectMapper().writeValueAsString(new Event(EventType.INFO, "In ascolto di eventi...")));
     }
 
     /**
@@ -69,6 +71,12 @@ public class WebSocketEventServer {
     @OnError
     public void onError(Throwable t) throws Throwable {
         log.error(t.getMessage());
+    }
+
+    public void endAll(CloseReason closeReason) throws IOException {
+        for(Session session: sessions){
+            session.close(closeReason);
+        }
     }
 
 }

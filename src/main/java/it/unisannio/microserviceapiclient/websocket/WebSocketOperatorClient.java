@@ -2,21 +2,19 @@ package it.unisannio.microserviceapiclient.websocket;
 
 import lombok.extern.slf4j.Slf4j;
 import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 
 import javax.websocket.CloseReason;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class WebSocketEventClient {
+public class WebSocketOperatorClient {
 
-    private static WebSocketEventServer myWebSocketEventServer;
+    private static WebSocketOperatorServer myWebSocketOperatorServer;
 
     protected static String message;
 
@@ -27,22 +25,22 @@ public class WebSocketEventClient {
     public static boolean connected = false;
 
 
-    public WebSocketEventClient(String url, WebSocketEventServer webSocketEventServer) throws Exception {
-        myWebSocketEventServer = webSocketEventServer;
+    public WebSocketOperatorClient(String url, WebSocketOperatorServer webSocketOperatorServer) throws Exception {
+        myWebSocketOperatorServer = webSocketOperatorServer;
         URI uri = new URI(url);
 
        this.client = new WebSocketClient(uri) {
             @Override
             public void onOpen(ServerHandshake handshake) {
 
-                log.info("Connected to Event WebSocket");
+                log.info("Connected to Operator WebSocket");
                 connected = true;
             }
 
             @Override
             public void onMessage(String message) {
-                myWebSocketEventServer.sendEvent(message);
-                WebSocketEventClient.message = message;
+                myWebSocketOperatorServer.sendNewData(message);
+                WebSocketOperatorClient.message = message;
             }
 
             @Override
@@ -50,7 +48,7 @@ public class WebSocketEventClient {
                 log.error("onError - " + ex.getMessage());
                 connected = false;
                 try {
-                    myWebSocketEventServer.endAll(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, ex.getMessage()));
+                    myWebSocketOperatorServer.endAll(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, ex.getMessage()));
                 } catch (IOException ex1) {
                     throw new RuntimeException(ex1);
                 }
@@ -63,7 +61,7 @@ public class WebSocketEventClient {
                 log.info(String.format("onClose(code: %s, reason: %s, remote: %s)", code, reason, remote));
                 connected = false;
                 try {
-                    myWebSocketEventServer.endAll(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, reason));
+                    myWebSocketOperatorServer.endAll(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, reason));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
