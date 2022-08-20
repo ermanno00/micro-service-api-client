@@ -1,12 +1,14 @@
 package it.unisannio.microserviceapiclient;
 
 import it.unisannio.microserviceapiclient.websocket.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class InitApplication implements CommandLineRunner {
 
     @Autowired

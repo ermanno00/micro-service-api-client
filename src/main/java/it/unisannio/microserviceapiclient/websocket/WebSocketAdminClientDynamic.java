@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class WebSocketAdminClientDynamic {
 
     private static WebSocketAdminServer myWebSocketAdminServer;
+    private static WebSocketOperatorServer myWebSocketOperatorServer;
 
     protected static String message;
 
@@ -39,7 +40,9 @@ public class WebSocketAdminClientDynamic {
 
             @Override
             public void onMessage(String message) {
+                log.info("Received some itineraries from Dynamic Admin WS");
                 myWebSocketAdminServer.sendItineraries(message, WebSocketAdminServer.Type.DYNAMIC);
+                myWebSocketOperatorServer.onNewData(message);
                 WebSocketAdminClientDynamic.message = message;
             }
 
@@ -74,7 +77,7 @@ public class WebSocketAdminClientDynamic {
 
     private void myReconnect() {
         sss.schedule(() -> {
-            log.error("WS Events Client - Reconnect");
+            log.error("WS Admin Dynamic Client - Reconnect");
             try {
                 client.reconnectBlocking();
             } catch (InterruptedException e) {

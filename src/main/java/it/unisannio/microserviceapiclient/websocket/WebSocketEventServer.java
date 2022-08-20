@@ -32,6 +32,7 @@ public class WebSocketEventServer {
             for(Session s: this.sessions) {
                 try {
                     s.getBasicRemote().sendText(message);
+                    log.info("Sent event at user "+s.getId());
                 } catch ( IOException e) {
                     log.error(e.getMessage());
                 }

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class WebSocketAdminClientStatic {
 
     private static WebSocketAdminServer myWebSocketAdminServer;
+    private static WebSocketOperatorServer myWebSocketOperatorServer;
 
     protected static String message;
 
@@ -39,8 +40,9 @@ public class WebSocketAdminClientStatic {
 
             @Override
             public void onMessage(String message) {
-                System.out.println(message);
+                log.info("Received some itineraries from Static Admin WS");
                 myWebSocketAdminServer.sendItineraries(message, WebSocketAdminServer.Type.STATIC);
+                myWebSocketOperatorServer.onNewData(message);
                 WebSocketAdminClientStatic.message = message;
             }
 
@@ -75,7 +77,7 @@ public class WebSocketAdminClientStatic {
 
     private void myReconnect() {
         sss.schedule(() -> {
-            log.error("WS Events Client - Reconnect");
+            log.error("WS Admin Static Client - Reconnect");
             try {
                 client.reconnectBlocking();
             } catch (InterruptedException e) {

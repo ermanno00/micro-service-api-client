@@ -12,6 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
+@Deprecated
 public class WebSocketOperatorClient {
 
     private static WebSocketOperatorServer myWebSocketOperatorServer;
@@ -39,7 +40,7 @@ public class WebSocketOperatorClient {
 
             @Override
             public void onMessage(String message) {
-                myWebSocketOperatorServer.sendNewData(message);
+                myWebSocketOperatorServer.onNewData(message);
                 WebSocketOperatorClient.message = message;
             }
 

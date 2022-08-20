@@ -39,6 +39,7 @@ public class WebSocketAdminClientCompleted {
 
             @Override
             public void onMessage(String message) {
+                log.info("Received some itineraries from Completed Admin WS");
                 myWebSocketAdminServer.sendItineraries(message, WebSocketAdminServer.Type.COMPLETED);
                 WebSocketAdminClientCompleted.message = message;
             }
@@ -74,7 +75,7 @@ public class WebSocketAdminClientCompleted {
 
     private void myReconnect() {
         sss.schedule(() -> {
-            log.error("WS Events Client - Reconnect");
+            log.error("WS Admin Completed Client - Reconnect");
             try {
                 client.reconnectBlocking();
             } catch (InterruptedException e) {

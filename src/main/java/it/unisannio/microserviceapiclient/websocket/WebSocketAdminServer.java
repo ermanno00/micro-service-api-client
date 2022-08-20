@@ -33,6 +33,7 @@ public class WebSocketAdminServer {
                     staticSessions.forEach(session -> {
                         try {
                             session.getBasicRemote().sendText(message);
+                            log.info("Sent some " +session.getPathParameters().get("type")+" itineraries at user "+session.getId());
                         } catch (IOException e) {
                             log.error(e.getMessage());
                         }
@@ -42,6 +43,7 @@ public class WebSocketAdminServer {
                     dynamicSessions.forEach(session -> {
                         try {
                             session.getBasicRemote().sendText(message);
+                            log.info("Sent some " +session.getPathParameters().get("type")+" itineraries at user "+session.getId());
                         } catch (IOException e) {
                             log.error(e.getMessage());
                         }
@@ -51,6 +53,7 @@ public class WebSocketAdminServer {
                     completedSessions.forEach(session -> {
                         try {
                             session.getBasicRemote().sendText(message);
+                            log.info("Sent some " +session.getPathParameters().get("type")+" itineraries at user "+session.getId());
                         } catch (IOException e) {
                             log.error(e.getMessage());
                         }
@@ -71,6 +74,7 @@ public class WebSocketAdminServer {
         executor.submit(() -> {
             try {
                 session.getBasicRemote().sendText(message);
+                log.info("Sent some " +session.getPathParameters().get("type")+" itineraries at user "+session.getId());
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
@@ -106,7 +110,7 @@ public class WebSocketAdminServer {
         staticSessions.remove(session);
         dynamicSessions.remove(session);
         completedSessions.remove(session);
-        log.info(session.getId() + " disconnected");
+        log.info("User: "+session.getId() + " disconnected");
     }
 
     @OnError

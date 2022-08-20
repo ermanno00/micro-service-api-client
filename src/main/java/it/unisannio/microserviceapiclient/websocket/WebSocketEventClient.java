@@ -41,6 +41,7 @@ public class WebSocketEventClient {
 
             @Override
             public void onMessage(String message) {
+                log.info("Received event message from Event WS");
                 myWebSocketEventServer.sendEvent(message);
                 WebSocketEventClient.message = message;
             }
