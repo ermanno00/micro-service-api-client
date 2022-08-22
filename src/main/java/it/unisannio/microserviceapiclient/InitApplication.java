@@ -20,6 +20,9 @@ public class InitApplication implements CommandLineRunner {
     @Autowired
     private WebSocketAdminServer webSocketAdminServer;
 
+    @Autowired
+    private WebSocketOperatorServer webSocketOperatorServer;
+
     @Override
     public void run(String... args) {
 
@@ -34,14 +37,14 @@ public class InitApplication implements CommandLineRunner {
         }
 
         try {
-            WebSocketAdminClientStatic staticws = new WebSocketAdminClientStatic(wsUri + "/wcomp/api/itineraries/static", webSocketAdminServer);
+            WebSocketAdminClientStatic staticws = new WebSocketAdminClientStatic(wsUri + "/wcomp/api/itineraries/static", webSocketAdminServer, webSocketOperatorServer);
             staticws.connect();
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
 
         try {
-            WebSocketAdminClientDynamic dynamicws = new WebSocketAdminClientDynamic(wsUri + "/wcomp/api/itineraries/dynamic", webSocketAdminServer);
+            WebSocketAdminClientDynamic dynamicws = new WebSocketAdminClientDynamic(wsUri + "/wcomp/api/itineraries/dynamic", webSocketAdminServer, webSocketOperatorServer);
             dynamicws.connect();
         } catch (Exception e) {
             System.err.println(e.getMessage());

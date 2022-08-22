@@ -98,8 +98,16 @@ public class WebSocketOperatorServer {
         sessions.put(vehicleId, session);
         log.info("vehicle with id: " + session.getPathParameters().get("vehicleId") + " connected");
 
-        if(deserialize(WebSocketOperatorClient.message).isPresent()) this.sendItineraries(deserialize(WebSocketOperatorClient.message).get(), session);
 
+        Set<ItineraryWebSocket> itineraries = new HashSet<>();
+
+        if(deserialize(WebSocketAdminClientDynamic.message).isPresent()) itineraries.addAll(deserialize(WebSocketAdminClientDynamic.message).get());
+        if(deserialize(WebSocketAdminClientStatic.message).isPresent()) itineraries.addAll(deserialize(WebSocketAdminClientStatic.message).get());
+        itineraries = itineraries.stream()
+                .filter(itinerary -> itinerary.getVehicleId().equals(vehicleId))
+                .filter(itinerary -> itinerary.getState().equals("ASSIGNED") || itinerary.getState().equals("RUNNING"))
+                .collect(Collectors.toSet());
+        this.sendItineraries(itineraries, session);
 
     }
 
@@ -118,7 +126,7 @@ public class WebSocketOperatorServer {
         }
         if (idToRemove != null)
             sessions.remove(idToRemove);
-        log.info(session.getId() + " disconnected");
+        log.info("vehicle with id: " + session.getPathParameters().get("vehicleId") + " disconnected");
     }
 
     @OnError

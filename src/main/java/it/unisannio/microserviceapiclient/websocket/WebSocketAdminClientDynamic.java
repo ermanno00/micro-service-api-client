@@ -26,8 +26,9 @@ public class WebSocketAdminClientDynamic {
     public static boolean connected = false;
 
 
-    public WebSocketAdminClientDynamic(String url, WebSocketAdminServer webSocketAdminServer) throws Exception {
+    public WebSocketAdminClientDynamic(String url, WebSocketAdminServer webSocketAdminServer, WebSocketOperatorServer webSocketOperatorServer) throws Exception {
         myWebSocketAdminServer = webSocketAdminServer;
+        myWebSocketOperatorServer = webSocketOperatorServer;
         URI uri = new URI(url);
 
        this.client = new WebSocketClient(uri) {
@@ -52,6 +53,7 @@ public class WebSocketAdminClientDynamic {
                 connected = false;
                 try {
                     myWebSocketAdminServer.endAll(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, ex.getMessage()), WebSocketAdminServer.Type.DYNAMIC);
+                    myWebSocketOperatorServer.endAll(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, ex.getMessage()));
                 } catch (IOException ex1) {
                     throw new RuntimeException(ex1);
                 }
@@ -65,6 +67,7 @@ public class WebSocketAdminClientDynamic {
                 connected = false;
                 try {
                     myWebSocketAdminServer.endAll(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, reason), WebSocketAdminServer.Type.DYNAMIC);
+                    myWebSocketOperatorServer.endAll(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, reason));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
