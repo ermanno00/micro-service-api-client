@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    workload.user.cattle.io/workloadselector: apps.deployment-wcomp-api-gateway-service
+  name: api-gateway-service
+  namespace: wcomp
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: apps.deployment-wcomp-api-gateway-service
+  template:
+    metadata:
+      labels:
+        app: api-gateway-service
+        workload.user.cattle.io/workloadselector: apps.deployment-wcomp-api-gateway-service
+    spec:
+      containers:
+        - image: 172.31.1.239:5050/gruppo2/api-gateway-service:latest
+          imagePullPolicy: Always
+          name: api-gateway-service
+          ports:
+            - containerPort: 8080
+              name: tcp-8080
+              protocol: TCP
+#          env:
+#            - name: DEMO_GREETING
+#              value: "Hello from the environment"
+#            - name: DEMO_FAREWELL
+#              value: "Such a sweet sorrow"
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: gitlab-secret
+      restartPolicy: Always
+      schedulerName: default-scheduler
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+spec:
+  ports:
+    - targetPort: 8080
+      port: 8080
+  selector:
+    app: api-gateway-service

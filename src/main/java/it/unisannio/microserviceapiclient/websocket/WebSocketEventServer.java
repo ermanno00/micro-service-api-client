@@ -1,7 +1,7 @@
 package it.unisannio.microserviceapiclient.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.discovery.converters.Auto;
+//import com.netflix.discovery.converters.Auto;
 import it.unisannio.microserviceapiclient.model.Event;
 import it.unisannio.microserviceapiclient.model.EventType;
 import lombok.extern.slf4j.Slf4j;
