@@ -2,8 +2,9 @@ package it.unisannio.microserviceapiclient.controller;
 
 import it.unisannio.microserviceapiclient.command.ScheduleCommand;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient;
+//import org.springframework.cloud.client.ServiceInstance;
+//import org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,21 +17,27 @@ import java.util.UUID;
 @CrossOrigin("*")
 public class ItineraryController {
 
-    @Autowired
-    private EurekaDiscoveryClient client;
+//    @Autowired
+//    private EurekaDiscoveryClient client;
+
+    @Value("${itineraries-service-host}")
+    private String host;
 
     /**CREO solo gli itinerari  statici che visualizza l amministratore*/
     @PostMapping
     public ResponseEntity<Void> computeStaticItineraries(@RequestBody ScheduleCommand command) {
-        ServiceInstance serviceInstance = client.getInstances("itineraries-micro-service-server").get(0);
-        return new RestTemplate().postForObject(serviceInstance.getUri()+"/wcomp/api/itineraries", command, ResponseEntity.class);
+//        ServiceInstance serviceInstance = client.getInstances("itineraries-micro-service-server").get(0);
+//        return new RestTemplate().postForObject(serviceInstance.getUri()+"/wcomp/api/itineraries", command, ResponseEntity.class);
+        return new RestTemplate().postForObject("http://"+host+"/wcomp/api/itineraries", command, ResponseEntity.class);
+
     }
 
     /**recupero il file gpx dell'itinerario cercato*/
     @GetMapping(value = "/{itineraryId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<byte[]> computeGPX(@PathVariable UUID itineraryId) {
-        ServiceInstance serviceInstance = client.getInstances("itineraries-micro-service-server").get(0);
-        return new RestTemplate().getForObject(serviceInstance.getUri()+"/wcomp/api/itineraries/"+itineraryId.toString(), ResponseEntity.class);
+//        ServiceInstance serviceInstance = client.getInstances("itineraries-micro-service-server").get(0);
+//        return new RestTemplate().getForObject(serviceInstance.getUri()+"/wcomp/api/itineraries/"+itineraryId.toString(), ResponseEntity.class);
+        return new RestTemplate().getForObject("http://"+host+"/wcomp/api/itineraries/"+itineraryId.toString(), ResponseEntity.class);
     }
 
 
@@ -43,8 +50,10 @@ public class ItineraryController {
                                                     @RequestParam(required = false, defaultValue = "false")Boolean complete) {
 
 
-        ServiceInstance serviceInstance = client.getInstances("itineraries-micro-service-server").get(0);
-        return new RestTemplate().postForObject(serviceInstance.getUri()+"/wcomp/api/itineraries/"+itineraryId+"?vehicleId="+vehicleId+"&accept="+accept+"&complete="+complete, null, ResponseEntity.class);
+//        ServiceInstance serviceInstance = client.getInstances("itineraries-micro-service-server").get(0);
+//        return new RestTemplate().postForObject(serviceInstance.getUri()+"/wcomp/api/itineraries/"+itineraryId+"?vehicleId="+vehicleId+"&accept="+accept+"&complete="+complete, null, ResponseEntity.class);
+        return new RestTemplate().postForObject("http://"+host+"/wcomp/api/itineraries/"+itineraryId+"?vehicleId="+vehicleId+"&accept="+accept+"&complete="+complete, null, ResponseEntity.class);
+
     }
 
 

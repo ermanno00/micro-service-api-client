@@ -3,16 +3,20 @@ package it.unisannio.microserviceapiclient;
 import it.unisannio.microserviceapiclient.websocket.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient;
+//import org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 public class InitApplication implements CommandLineRunner {
 
-    @Autowired
-    private EurekaDiscoveryClient client;
+    @Value("${itineraries-service-host}")
+    private String host;
+
+//    @Autowired
+//    private EurekaDiscoveryClient client;
 
     @Autowired
     private WebSocketEventServer webSocketEventServer;
@@ -27,8 +31,9 @@ public class InitApplication implements CommandLineRunner {
     public void run(String... args) {
 
 
-        String wsUri = "ws://"+client.getInstances("itineraries-micro-service-server").get(0).getHost()+":"+client.getInstances("itineraries-micro-service-server").get(0).getPort();
+        //String wsUri = "ws://"+client.getInstances("itineraries-micro-service-server").get(0).getHost()+":"+client.getInstances("itineraries-micro-service-server").get(0).getPort();
 
+        String wsUri= "ws://"+host;
         try {
             WebSocketEventClient ws = new WebSocketEventClient(wsUri + "/wcomp/api/events", webSocketEventServer);
             ws.connect();
